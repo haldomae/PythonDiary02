@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ diary.title }} - 私の日記</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>📝 日記の詳細</h1>
+        <a href="/" class="back-link">一覧に戻る</a>
+    </header>
+
+    <div class="container">
+        <div class="diary-detail">
+            <div class="detail-header">
+                <h2>{{ diary.title }}</h2>
+                <div class="detail-meta">
+                    {% if diary.category_name %}
+                    <span class="category-badge">
+                        {{diary.category_name}}
+                    </span>
+                    {% endif %}
+                    <span class="diary-date">{{ diary.created_at|format_date }}</span>
+                </div>
+            </div>
+            
+            <div class="detail-content">
+                {{ diary.content }}
+            </div>
+            
+            <div class="detail-actions">
+                <a href="/edit/{{ diary.id }}" class="edit-button">✏️ 編集</a>
+                <a href="/delete/{{ diary.id }}" class="delete-button" 
+                   onclick="return confirm('本当に削除しますか？')">🗑️ 削除</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

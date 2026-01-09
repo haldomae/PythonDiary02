@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>私の日記</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>📝 私の日記</h1>
+            <a href="/categories" class="back-link">カテゴリ管理</a>
+        </div>
+        <p class="diary-count">
+            {% if keyword or year_month or category_filter %}
+            検索結果: {{ diaries|length }}件
+            {% else %}
+            全{{ diaries|length }}件の日記
+            {% endif %}
+        </p>
+    </header>
+
+    <div class="container">
+        <!-- 検索フォーム -->
+        <div class="search-form">
+            <form action="/" method="GET">
+                <div class="search-inputs">
+                    <div class="search-group">
+                        <label>🔍 キーワード検索</label>
+                        <input type="text" name="keyword" 
+                               value="{{ keyword }}"
+                               placeholder="タイトルや本文で検索">
+                    </div>
+                    
+                    <div class="search-group">
+                        <label>📅 年月で絞り込み</label>
+                        <input type="month" name="year_month" 
+                               value="{{ year_month }}">
+                    </div>
+                
+                <div class="search-buttons">
+                    <button type="submit" class="search-button">検索</button>
+                    <a href="/" class="clear-button">クリア</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- 日記投稿フォーム -->
+        <div class="diary-form">
+            <h2>新しい日記を書く</h2>
+            <form action="/add" method="POST">
+                <div class="form-group">
+                    <label>タイトル</label>
+                    <input type="text" name="title" required 
+                           placeholder="今日のタイトル">
+                </div>
+                
+                <div class="form-group">
+                    <label>カテゴリ</label>
+                    <select name="category_id" class="category-select">
+                        <option value="">カテゴリなし</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>本文</label>
+                    <textarea name="content" rows="10" required
+                              placeholder="今日の出来事を書いてください..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-button">投稿する</button>
+            </form>
+        </div>
+
+        <!-- 日記一覧 -->
+        <div class="diaries-list">
+            <h2>
+                {% if keyword or year_month or category_filter %}
+                検索結果
+                {% else %}
+                これまでの日記
+                {% endif %}
+            </h2>
+            
+            {% if diaries|length == 0 %}
+            <div class="no-diary">
+                {% if keyword or year_month or category_filter %}
+                <p>検索条件に一致する日記が見つかりませんでした</p>
+                {% else %}
+                <p>まだ日記が投稿されていません</p>
+                {% endif %}
+            </div>
+            {% else %}
+            
+            {% for diary in diaries %}
+            <div class="diary-card">
+                <div class="diary-header">
+                    <div class="diary-title-area">
+                        <h3 class="diary-title">{{ diary.title }}</h3>
+                        {% if diary.category_name %}
+                        <span class="category-badge">{{ diary.category_name }}</span>
+                        {% endif %}
+                    </div>
+                    <span class="diary-date">{{ diary.created_at|format_date }}</span>
+                </div>
+                <div class="diary-content">
+                    {{ diary.content[:100] }}{% if diary.content|length > 100 %}...{% endif %}
+                </div>
+                <div class="diary-actions">
+                    <a href="/detail/{{ diary.id }}" class="detail-link">詳細を見る</a>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

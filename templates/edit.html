@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>日記を編集 - 私の日記</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>📝 日記を編集</h1>
+        <a href="/detail/{{ diary.id }}" class="back-link">詳細に戻る</a>
+    </header>
+
+    <div class="container">
+        <div class="diary-form">
+            <h2>日記を編集する</h2>
+            <form action="/update/{{ diary.id }}" method="POST">
+                <div class="form-group">
+                    <label>タイトル</label>
+                    <input type="text" name="title" required
+                           value="{{ diary.title }}">
+                </div>
+                
+                <div class="form-group">
+                    <label>本文</label>
+                    <textarea name="content" rows="15" required>{{ diary.content }}</textarea>
+                </div>
+                
+                <button type="submit" class="submit-button">更新する</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
